@@ -31,12 +31,24 @@ class Program
         //    return;
         //}
 
-        // 2. Inizializza il parser
+        // 2. Inizializza il parser e il validatore
         var parser = new CMP265FileParser();
+        var validator = new ValidationService();
 
         try
         {
             var records = parser.ParseFile(filePath);
+            var validationResult = validator.ValidateRecords(records);
+
+            if (!validationResult.IsValid)
+            {
+                Console.WriteLine("Errori di validazione:");
+                foreach (var error in validationResult.Errors)
+                {
+                    Console.WriteLine($"- {error}");
+                }
+                return;
+            }
 
             // Esempio: Stampa risultati
             Console.WriteLine($"Trovati {records.Count} record:");
@@ -62,7 +74,7 @@ class Program
                 }
             }
 
-            // Esportazione
+            // Procedi con l'esportazione se tutto ok
             var excelPath = Path.ChangeExtension(filePath, ".xlsx");
             var pdfPath = Path.ChangeExtension(filePath, ".pdf");
             var csvPath = Path.ChangeExtension(filePath, ".csv");
