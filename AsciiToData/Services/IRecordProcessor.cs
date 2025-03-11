@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AsciiToData.Models
+namespace BinaryConverter.Services
 {
-    public abstract class CMP265Record
+    public interface IRecordProcessor
     {
-        public required string RecordType { get; set; }
+        ParsedRecords ProcessFile(string filePath);
     }
 }
