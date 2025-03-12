@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BinaryConverter.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,15 +15,31 @@ namespace BinaryConverter.Models
         public void WriteBinary(System.IO.BinaryWriter writer)
         {
             WriteFixedString(writer, num_lav, 8);
-            WriteFixedString(writer, num_lav, 8);
+            WriteFixedString(writer, stato_lav, 8);
         }
 
-        private void WriteFixedString(System.IO.BinaryWriter writer, string value, int length)
+        private void WriteFixedString(System.IO.BinaryWriter writer, string? value, int length)
         {
-            // Se il campo è più corto, lo padderemo con spazi; se più lungo, lo troncchiamo
-            var fixedValue = value.Length > length ? value.Substring(0, length) : value.PadRight(length, ' ');
-            var bytes = Encoding.ASCII.GetBytes(fixedValue);
+            // Se la stringa è null, considerala come string.Empty
+            string fixedValue = (value ?? string.Empty);
+            // Se la stringa è più lunga del limite, troncarla; altrimenti, pad con spazi
+            fixedValue = fixedValue.Length > length
+                ? fixedValue.Substring(0, length)
+                : fixedValue.PadRight(length, ' ');
+            byte[] bytes = System.Text.Encoding.ASCII.GetBytes(fixedValue);
             writer.Write(bytes);
+            Console.WriteLine($"{num_lav},{stato_lav}");
+        }
+
+        // Metodo statico per la deserializzazione
+        public static LavoroRecord ReadBinary(BinaryReader reader)
+        {
+            var record = new LavoroRecord
+            {
+                num_lav = ParserUtils.ReadFixedString(reader, 8),
+                stato_lav = ParserUtils.ReadFixedString(reader, 8)
+            };
+            return record;
         }
     }
 }

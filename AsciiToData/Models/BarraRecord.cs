@@ -1,12 +1,14 @@
-﻿using System;
+﻿using BinaryConverter.Utils;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BinaryConverter.Models
 {
-    public class BarraRecord
+    public class BarraRecord : IBinaryWritable
     {
         public string? cod_prof { get; set; }
         public string? col { get; set; }
@@ -24,14 +26,14 @@ namespace BinaryConverter.Models
             WriteFixedString(writer, cod_prof, 8);
             WriteFixedString(writer, col, 8);
             writer.Write(nbarra_ass.HasValue ? nbarra_ass.Value : (short)0);
-            writer.Write(lung_standard.HasValue ? lung_standard.Value : (float)0);
+            writer.Write(lung_standard.HasValue ? lung_standard.Value : (float)0f);
             WriteFixedString(writer, rif1, 20);
             WriteFixedString(writer, rif2 , 20);
             writer.Write(slats_ass.HasValue ? slats_ass.Value : (short)0);
-            writer.Write(spess.HasValue ? spess.Value : (float)0);
+            writer.Write(spess.HasValue ? spess.Value : (float)0f);
         }
 
-        private void WriteFixedString(BinaryWriter writer, string value, int length)
+        private void WriteFixedString(BinaryWriter writer, string? value, int length)
         {
             // Se la stringa è null, considerala come string.Empty
             string fixedValue = (value ?? string.Empty);
@@ -41,6 +43,23 @@ namespace BinaryConverter.Models
                 : fixedValue.PadRight(length, ' ');
             byte[] bytes = System.Text.Encoding.ASCII.GetBytes(fixedValue);
             writer.Write(bytes);
+        }
+
+        // Metodo statico per la deserializzazione
+        public static BarraRecord ReadBinary(BinaryReader reader)
+        {
+            var record = new BarraRecord
+            {
+                cod_prof = ParserUtils.ReadFixedString(reader, 8),
+                col = ParserUtils.ReadFixedString(reader, 8),
+                nbarra_ass = reader.ReadInt16(),
+                lung_standard = reader.ReadSingle(),
+                rif1 = ParserUtils.ReadFixedString(reader, 20),
+                rif2 = ParserUtils.ReadFixedString(reader, 20),
+                slats_ass = reader.ReadInt16(),
+                spess = reader.ReadSingle(),
+            };
+            return record;
         }
     }
 }

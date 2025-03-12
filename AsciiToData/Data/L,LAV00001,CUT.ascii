@@ -1,0 +1,34 @@
+L,LAV00001,CUT
+B,P10204,WHITE,1,60000
+P,13000,12000,450,900,450,900,01,15,01,1,Lower window frame, ,3321.1,Maurer & Tursan GmbH
+P,09000,07000,450,450,450,900,01,15,02,2,Upper window frame, ,3321.1,Maurer & Tursan GmbH
+P,9000,7000,450,900,450,900,01,15,03,3,Left window frame, ,3321.1,Maurer & Tursan GmbH
+P,08000,08000, 900,900,900,900,01,15,05,4,Right window frame, ,3321.1,Maurer & Tursan GmbH
+R,21000,21000,900,900,RIF.003
+B,P10204,WHITE,1,60000
+P,23000,22000,450, 900,900,900,01,16,01,5,Lower window frame, ,0121,Mario Rossi
+P,09000,07000,450, 900,900,450,01,16,02,6,Upper window frame, ,0121, Mario Rossi
+P,19000,17000,450, 900,900,450,01,16,02,7,Right window frame, ,0121, Mario Rossi 
+P,08000,06000,450, 900,450,900,01,16,05,8,Left window frame, ,0121, Mario Rossi
+B,P10205,WHITE,2,60000
+P,21000,20000,450,900,900,900,01,15,06,9,Upright Door 1 RI, ,3321.1,Maurer & Tursan GmbH
+P,21000,20000,450, 900,900,900,01,15,07,10,Upright Door 1 LE, ,3321.1,Maurer & Tursan GmbH
+P,11000,09000,450, 900,900,450,01,15,09,11,Upper Crosspiece Door 1, ,3321.1,Maurer & Tursan GmbH
+P,11000,09000,450,900,450,900,01,15,10,12,Low. Crosspiece Door 1, ,3321.1,Maurer & Tursan GmbH
+P,14000,12000, 450,900,450,900,01,15,11,13,Upright Door 2 RI, ,3321.1,Maurer & Tursan GmbH
+P,14000,12000, 450,900,450,900,01,15,12,14,Upright Door 2 LE, ,3321.1,Maurer & Tursan GmbH
+P,13000,11000, 450,900,450,900,01,15,13,15,Upper Crosspiece Door 2, ,3321.1,Maurer & Tursan GmbH
+P,13000,11000, 450,900,450,900,01,15,14,16,Low. Crosspiece Door 2, ,3321.1,Maurer & Tursan GmbH
+B,P10205,NERO,2,60000
+P,21000,20000, 450,900,450,900,01,16,06,9,Upright Door 1 RI, ,0121, Mario Rossi
+P,21000,20000, 450,900,450,900,01,16,07,10,Upright Door 1 LE, ,0121, Mario Rossi
+P,11000,09000, 450,900,450,900,01,16,09,11,Upper Crosspiece Door 1, ,0121, Mario Rossi
+P,11000,09000, 450,900,450,900,01,16,10,12,Low. Crosspiece Door 1, ,0121, Mario Rossi
+P,14000,12000, 450,900,450,900,01,16,11,13,Upright Door 2 RI, ,0121, Mario Rossi
+P,14000,12000, 450,900,450,900,01,16,12,14,Upright Door 2 LE, ,0121, Mario Rossi
+P,13000,11000, 450,900,450,900,01,16,03,15,Upper Crosspiece Door 2, ,0121, Mario Rossi
+P,13000,11000, 450,900,450,900,01,16,04,16,Low. Crosspiece Door 2, ,0121, Mario Rossi
+B,P10206,BIANCO,1,4095,RIF.001
+P,23000,22000,500,900,500,900,01,15,15,17,Fixed Upright,9,3321.1,Maurer & Tursan GmbH
+P,09000,07000,450,900,450,900,01,15,16,18,Fixed Upright, ,3321.1,Maurer & Tursan GmbH
+
