@@ -52,6 +52,7 @@ namespace BinaryConverter.Utils
                 {
                     byte[] recordBytes = StructureToByteArray(lav);
                     writer.Write(recordBytes);
+                    
                 }
             }
         }
@@ -62,7 +63,7 @@ namespace BinaryConverter.Utils
             using (BinaryWriter writer = new BinaryWriter(fs, Encoding.Unicode))
             {
                 // Se vuoi aggiungere un BOM all'inizio:
-                //writer.Write((ushort)0xFEFF);
+                writer.Write((ushort)0xFEFF);
 
                 foreach (var barra in listaBarre)
                 {

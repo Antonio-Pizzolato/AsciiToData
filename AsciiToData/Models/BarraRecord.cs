@@ -121,29 +121,96 @@ namespace BinaryConverter.Models
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 4)]
         public string next_barra;
 
-        
 
 
 
-        //public static void WriteFileBar(List<DATI_BARRA> listaBarre, string outputPath)
-        //{
-        //    using (FileStream fs = new FileStream(outputPath, FileMode.Create))
-        //    using (BinaryWriter writer = new BinaryWriter(fs, Encoding.Unicode))
-        //    {
-        //        // Se vuoi aggiungere un BOM all'inizio:
-        //        //writer.Write((ushort)0xFEFF);
 
-        //        foreach (var barra in listaBarre)
-        //        {
-        //            byte[] recordBytes = BinaryFileWriter.StructureToByteArray(barra);
-        //            writer.Write(recordBytes);
-        //        }
-        //    }
+        public static void WriteDatiBarreRecord(BinaryWriter writer, DATI_BARRA record)
+        {
+            // Campo short: num_barra
+            writer.Write(record.num_barra);
 
-        //}
+            // Campo stringa: cod_prof (lunghezza fissa, es. 17 caratteri)
+            WriteFixedString(writer, record.cod_prof, 17);
+
+            // Campo float: spess
+            writer.Write(record.spess);
+
+            // Campo stringa: col (lunghezza fissa, es. 9 caratteri)
+            WriteFixedString(writer, record.col, 9);
+
+            // Campo stringa: descr (lunghezza fissa, es. 21 caratteri)
+            WriteFixedString(writer, record.descr, 21);
+
+            // Campo short: dummy2
+            writer.Write(record.dummy2);
+
+            // Campo short: dummy3
+            writer.Write(record.dummy3);
+
+            // Campo float: lung_standard
+            writer.Write(record.lung_standard);
+
+            // Campo short: tipo
+            writer.Write(record.tipo);
+
+            // Campo short: vis_nb_ass
+            writer.Write(record.vis_nb_ass);
+
+            // Campo short: nbarra_ass
+            writer.Write(record.nbarra_ass);
+
+            // Campo short: tagliata
+            writer.Write(record.tagliata);
+
+            // Campo stringa: rif (lunghezza fissa, es. 8 caratteri)
+            WriteFixedString(writer, record.rif, 8);
+
+            // Campo array di byte: dummy (32 byte)
+            writer.Write(record.dummy);
+
+            // Campi stringa per i puntatori (dp, pr, next_barra) – ad es. lunghezza fissa 4 caratteri
+            WriteFixedString(writer, record.dp, 4);
+            WriteFixedString(writer, record.pr, 4);
+            WriteFixedString(writer, record.next_barra, 4);
+        }
+
+        static void WriteFixedString(BinaryWriter writer, string s, int fixedLength)
+        {
+            if (s == null)
+                s = string.Empty;
+            if (s.Length > fixedLength)
+                s = s.Substring(0, fixedLength);
+            for (int i = 0; i < fixedLength; i++)
+            {
+                char c = (i < s.Length) ? s[i] : '\0';
+                writer.Write(c);  // Questo scrive 2 byte per char (UTF-16 LE)
+            }
 
 
 
-    };
+
+
+            //public static void WriteFileBar(List<DATI_BARRA> listaBarre, string outputPath)
+            //{
+            //    using (FileStream fs = new FileStream(outputPath, FileMode.Create))
+            //    using (BinaryWriter writer = new BinaryWriter(fs, Encoding.Unicode))
+            //    {
+            //        // Se vuoi aggiungere un BOM all'inizio:
+            //        //writer.Write((ushort)0xFEFF);
+
+            //        foreach (var barra in listaBarre)
+            //        {
+            //            byte[] recordBytes = BinaryFileWriter.StructureToByteArray(barra);
+            //            writer.Write(recordBytes);
+            //        }
+            //    }
+
+            //}
+
+
+
+        }
+    }
 
 }

@@ -53,21 +53,21 @@ namespace BinaryConverter.Services
                         {
                             num_barra = ParserUtils.SafeParseShort(fields, 0),
                             cod_prof = ParserUtils.SafeGet(fields, 1),
-                            spess = ParserUtils.SafeParseShort(fields, 2),
-                            col = ParserUtils.SafeGet(fields, 3),
+                            spess = ParserUtils.SafeParseShort(fields, 8),
+                            col = ParserUtils.SafeGet(fields, 2),
                             descr = ParserUtils.SafeGet(fields, 4),
-                            dummy2 = ParserUtils.SafeParseShort(fields, 5),
-                            dummy3 = ParserUtils.SafeParseShort(fields, 6),
-                            lung_standard = ParserUtils.SafeParseFloat(fields, 7),
+                            dummy2 = 0,
+                            dummy3 = 0,
+                            lung_standard = ParserUtils.SafeParseFloat(fields, 4),
                             tipo = ParserUtils.SafeParseShort(fields, 8),
                             vis_nb_ass = ParserUtils.SafeParseShort(fields, 9),
-                            nbarra_ass = ParserUtils.SafeParseShort(fields, 10),
+                            nbarra_ass = ParserUtils.SafeParseShort(fields, 3),
                             tagliata = ParserUtils.SafeParseShort(fields, 11),
-                            rif = ParserUtils.SafeGet(fields, 12),
+                            rif = ParserUtils.SafeGet(fields, 5),
                             dummy = new byte[32], // Riempito con 0
-                            dp = ParserUtils.SafeGet(fields,13),
-                            pr = ParserUtils.SafeGet(fields,14),
-                            next_barra = ParserUtils.SafeGet(fields,15)
+                            dp = "",
+                            pr = "",
+                            next_barra = ""
                         };
                         parsedRecords.Barre.Add(barra);
                         break;

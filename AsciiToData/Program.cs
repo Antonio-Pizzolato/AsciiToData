@@ -3,6 +3,7 @@ using BinaryConverter.Models;
 using BinaryConverter.Services;
 using BinaryConverter.Utils;
 using System;
+using System.Text;
 
 class Program
 {
@@ -28,11 +29,26 @@ class Program
             string pathPez = @"C:\Users\antonio.pizzolato\source\repos\AsciiToData\AsciiToData\Data\output.pez";
             string pathRes = @"C:\Users\antonio.pizzolato\source\repos\AsciiToData\AsciiToData\Data\output.res";
 
+
+            using (FileStream fs = new FileStream(pathBar, FileMode.Create))
+            using (BinaryWriter writer = new BinaryWriter(fs, Encoding.Unicode))
+            {
+                // Se desideri, scrivi il BOM
+               // writer.Write((ushort)0xFEFF);
+
+                foreach (var record in parsedRecords.Barre)
+                {
+                    DATI_BARRA.WriteDatiBarreRecord(writer, record);
+                }
+            }
+
+
+
             // Scrittura dei file
-            BinaryFileWriter.WriteFileLav(parsedRecords.Lavori, pathLav);
-            BinaryFileWriter.WriteFileBar(parsedRecords.Barre, pathBar);
-            BinaryFileWriter.WriteFilePez(parsedRecords.Pezzi, pathPez);
-            BinaryFileWriter.WriteFileRes(parsedRecords.Residui, pathRes);
+            //BinaryFileWriter.WriteFileLav(parsedRecords.Lavori, pathLav);
+            //BinaryFileWriter.WriteFileBar(parsedRecords.Barre, pathBar);
+            //BinaryFileWriter.WriteFilePez(parsedRecords.Pezzi, pathPez);
+            //BinaryFileWriter.WriteFileRes(parsedRecords.Residui, pathRes);
 
 
             Console.WriteLine("Conversione completata.");
