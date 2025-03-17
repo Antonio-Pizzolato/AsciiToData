@@ -9,9 +9,9 @@ namespace BinaryConverter.Services
 {
     public class ParsedRecords
     {
-        public List<LavoroRecord> Lavori { get; set; } = new List<LavoroRecord>();
-        public List<BarraRecord> Barre { get; set; } = new List<BarraRecord>();
-        public List<PezzoRecord> Pezzi { get; set; } = new List<PezzoRecord>();
-        public List<ResiduoRecord> Residui { get; set; } = new List<ResiduoRecord>();
+        public List<DATI_LAVORO> Lavori = new List<DATI_LAVORO>();
+        public List<DATI_BARRA> Barre = new List<DATI_BARRA>();
+        public List<DATI_PEZZO> Pezzi = new List<DATI_PEZZO>();
+        public List<DATI_PEZZO_RESTANTE> Residui = new List<DATI_PEZZO_RESTANTE>();
     }
 }

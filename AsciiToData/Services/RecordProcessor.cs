@@ -39,82 +39,108 @@ namespace BinaryConverter.Services
                 switch (recordType)
                 {
                     case 'L':
-                        
-                        var lav = new LavoroRecord
+
+                        var lav = new DATI_LAVORO
                         {
                             num_lav = ParserUtils.SafeGet(fields, 1),
                             stato_lav = ParserUtils.SafeGet(fields, 2),
                         };
                         parsedRecords.Lavori.Add(lav);
-                        
+
                         break;
                     case 'B':
-                        var barra = new BarraRecord
+                        var barra = new DATI_BARRA
                         {
+                            num_barra = ParserUtils.SafeParseShort(fields, 0),
                             cod_prof = ParserUtils.SafeGet(fields, 1),
-                            col = ParserUtils.SafeGet(fields, 2),
-                            nbarra_ass = ParserUtils.SafeParseShort(fields, 3),
-                            lung_standard = ParserUtils.SafeParseFloat(fields, 4),
-                            rif1 = ParserUtils.SafeGet(fields, 5),
-                            rif2 = ParserUtils.SafeGet(fields, 6),
-                            slats_ass = ParserUtils.SafeParseShort (fields, 7),
-                            spess = ParserUtils.SafeParseShort(fields, 8)
+                            spess = ParserUtils.SafeParseShort(fields, 2),
+                            col = ParserUtils.SafeGet(fields, 3),
+                            descr = ParserUtils.SafeGet(fields, 4),
+                            dummy2 = ParserUtils.SafeParseShort(fields, 5),
+                            dummy3 = ParserUtils.SafeParseShort(fields, 6),
+                            lung_standard = ParserUtils.SafeParseFloat(fields, 7),
+                            tipo = ParserUtils.SafeParseShort(fields, 8),
+                            vis_nb_ass = ParserUtils.SafeParseShort(fields, 9),
+                            nbarra_ass = ParserUtils.SafeParseShort(fields, 10),
+                            tagliata = ParserUtils.SafeParseShort(fields, 11),
+                            rif = ParserUtils.SafeGet(fields, 12),
+                            dummy = new byte[32], // Riempito con 0
+                            dp = ParserUtils.SafeGet(fields,13),
+                            pr = ParserUtils.SafeGet(fields,14),
+                            next_barra = ParserUtils.SafeGet(fields,15)
                         };
                         parsedRecords.Barre.Add(barra);
                         break;
                     case 'P':
-                        var pezzo = new PezzoRecord
+                        var pezzo = new DATI_PEZZO
                         {
-                            l_ext = ParserUtils.SafeParseFloat(fields, 1),
-                            l_int = ParserUtils.SafeParseFloat(fields, 2),
-                            angt_sx = ParserUtils.SafeParseFloat(fields, 3),
-                            angp_sx = ParserUtils.SafeParseFloat(fields, 4),
-                            angt_dx = ParserUtils.SafeParseFloat(fields, 5),
-                            angp_dx = ParserUtils.SafeParseFloat(fields, 6),
+                            num_pezzo = ParserUtils.SafeParseShort(fields, 1),
+                            n_barra = ParserUtils.SafeParseShort(fields, 2),
 
-                            num_pezzo = ParserUtils.SafeParseShort(fields, 7),
-                            n_carrello = ParserUtils.SafeParseShort(fields, 8),
-                            n_slot = ParserUtils.SafeParseShort(fields, 9),
+                            angt_sx = ParserUtils.SafeParseShort(fields, 3),
+                            angp_sx = ParserUtils.SafeParseShort(fields, 4),
+                            angt_dx = ParserUtils.SafeParseShort(fields, 5),
+                            angp_dx = ParserUtils.SafeParseShort(fields, 6),
 
-                            n_unico_pezzo =ParserUtils.ParseLong(fields[10]),
-                                
-                            id = ParserUtils.SafeGet(fields, 11),
+                            l_ext = ParserUtils.SafeParseShort(fields, 7),
+                            l_int = ParserUtils.SafeParseShort(fields, 8),
+
+                            id = ParserUtils.SafeGet(fields, 9),
+
+                            n_carrello = ParserUtils.SafeParseShort(fields, 10),
+                            n_slot = ParserUtils.SafeParseShort(fields, 11),
+
                             tag_speciale = ParserUtils.SafeGet(fields, 12),
-                            ordine = ParserUtils.SafeGet(fields, 13),
-                            cliente = ParserUtils.SafeGet(fields, 14),
-                            pian_trav1 = ParserUtils.SafeGet(fields, 15),
-                            pian_trav2 = ParserUtils.SafeGet(fields, 16),
-                            pian_trav3 = ParserUtils.SafeGet(fields, 17),
-                            rinf = ParserUtils.SafeGet(fields, 18),
-                            fissaggio = ParserUtils.SafeGet(fields, 19),
-                            cod_tip = ParserUtils.SafeGet(fields, 20),
-                            f_acqua1 = ParserUtils.SafeGet(fields, 21),
-                            f_acqua2 = ParserUtils.SafeGet(fields, 22),
-                            f_acqua3 = ParserUtils.SafeGet(fields, 23),
-                            note = ParserUtils.SafeGet(fields, 24),
 
-                            q1 = ParserUtils.SafeParseFloat(fields, 25),
-                            q2 = ParserUtils.SafeParseFloat(fields, 26),
-                            q3 = ParserUtils.SafeParseFloat(fields, 27),
-                            q4 = ParserUtils.SafeParseFloat(fields, 28),
+                            n_unico_pezzo = ParserUtils.SafeParseULong(fields, 13),
+
+                            n = ParserUtils.SafeParseShort(fields, 14),
+                            n_lav = ParserUtils.SafeParseShort(fields, 15),
+
+                            ordine = ParserUtils.SafeGet(fields, 16),
+                            cliente = ParserUtils.SafeGet(fields, 17),
+                            pian_trav1 = ParserUtils.SafeGet(fields, 18),
+                            pian_trav2 = ParserUtils.SafeGet(fields, 19),
+                            pian_trav3 = ParserUtils.SafeGet(fields, 20),
+                            rinf = ParserUtils.SafeGet(fields, 21),
+                            fissaggio = ParserUtils.SafeGet(fields, 22),
+                            cod_tip = ParserUtils.SafeGet(fields, 23),
+                            f_acqua1 = ParserUtils.SafeGet(fields, 24),
+                            f_acqua2 = ParserUtils.SafeGet(fields, 25),
+                            f_acqua3 = ParserUtils.SafeGet(fields, 26),
+                            note = ParserUtils.SafeGet(fields, 27),
+
+                            taglia_doppia = ParserUtils.SafeParseShort(fields, 28),
+
+                            q = new float[4],
 
                             info1 = ParserUtils.SafeGet(fields, 29),
                             info2 = ParserUtils.SafeGet(fields, 30),
                             info3 = ParserUtils.SafeGet(fields, 31),
                             info4 = ParserUtils.SafeGet(fields, 32),
-                            info5 = ParserUtils.SafeGet(fields, 33)
+                            info5 = ParserUtils.SafeGet(fields, 33),
+
+                            dummy = new byte[20],
+                            pointers = new byte[4],
                         };
                         parsedRecords.Pezzi.Add(pezzo);
                         break;
                     case 'R':
-                        var residuo = new ResiduoRecord
+                        var residuo = new DATI_PEZZO_RESTANTE
                         {
                             n_barra = ParserUtils.SafeParseShort(fields, 1),
+                            dummy2 = 0,
+
                             l_ext = ParserUtils.SafeParseFloat(fields, 2),
                             l_int = ParserUtils.SafeParseFloat(fields, 3),
-                            ang_sx = ParserUtils.SafeParseFloat(fields, 4),
-                            ang_dx = ParserUtils.SafeParseFloat(fields, 5),
-                            rif = fields.Length >= 7 ? fields[6] : string.Empty
+                            angt_sx = ParserUtils.SafeParseFloat(fields, 4),
+                            angp_sx = ParserUtils.SafeParseFloat(fields, 5),
+                            angt_dx = ParserUtils.SafeParseFloat(fields, 6),
+                            angp_dx = ParserUtils.SafeParseFloat(fields, 7),
+
+                            dummy = new byte[8],
+
+                            rif = ParserUtils.SafeGet(fields, 8),
                         };
                         parsedRecords.Residui.Add(residuo);
                         break;
@@ -127,35 +153,5 @@ namespace BinaryConverter.Services
             return parsedRecords;
         }
 
-        // Metodi helper per la sicurezza
-        private static string SafeGet(string[] fields, int index)
-        {
-            return fields.Length > index ? fields[index] : string.Empty;
-        }
-
-        private static short SafeParseShort(string[] fields, int index, short defaultValue = 0)
-        {
-            string? rawValue = SafeGet(fields, index).Trim();
-            return short.TryParse(rawValue, NumberStyles.Any, CultureInfo.InvariantCulture, out short result)
-                ? result
-                : defaultValue;
-        }
-
-        private static float? SafeParseFloat(string[] fields, int index, float? defaultValue = null)
-        {
-            string? rawValue = SafeGet(fields, index).Trim();
-            return float.TryParse(rawValue, NumberStyles.Any, CultureInfo.InvariantCulture, out float result)
-                ? result
-                : defaultValue;
-
-        }
-
-        private static long SafeParseLong(string[] fields, int index, long defaultValue = 0)
-        {
-            string? rawValue = SafeGet(fields, index).Trim();
-            return long.TryParse(rawValue, NumberStyles.Any, CultureInfo.InvariantCulture, out long result)
-                ? result
-                : defaultValue;
-        }
     }
 }
