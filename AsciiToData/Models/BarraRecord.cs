@@ -9,104 +9,77 @@ using System.Threading.Tasks;
 
 namespace BinaryConverter.Models
 {
-    //public class BarraRecord : IBinaryWritable
-    //{
-    //    public string? cod_prof { get; set; }
-    //    public string? col { get; set; }
-    //    public short? nbarra_ass { get; set; }
-    //    public float? lung_standard { get; set; }
-    //    public string? rif1 { get; set; }
-    //    public string? rif2 { get; set; }
-    //    public short? slats_ass { get; set; }
-    //    public float? spess {  get; set; }
-
-
-    //    public void WriteBinary(BinaryWriter writer)
-    //    {
-    //        // Supponiamo lunghezza fissa 8 per CodProf e 8 per Col
-    //        WriteFixedString(writer, cod_prof, 8 + 1);
-    //        WriteFixedString(writer, col, 8 + 1);
-    //        if (nbarra_ass.Value is >= 0 and <= 2)
-    //            writer.Write(nbarra_ass.HasValue ? nbarra_ass.Value : (short)0);
-    //        else Console.WriteLine("Numero barre assieme troppo alto");
-    //        writer.Write(lung_standard.HasValue ? lung_standard.Value : (float)0f);
-    //        WriteFixedString(writer, rif1, 20 + 1);
-    //        WriteFixedString(writer, rif2, 20 + 1);
-    //        writer.Write(slats_ass.HasValue ? slats_ass.Value : (short)0);
-    //        writer.Write(spess.HasValue ? spess.Value : (float)0f);
-    //    }
-
-    //    //public void WriteBinary(BinaryWriter writer)
-    //    //{
-    //    //    writer.Write(BinaryConverter.Utils.BinaryConverter.ConvertStringToBytes(cod_prof));
-    //    //    writer.Write(BinaryConverter.Utils.BinaryConverter.ConvertStringToBytes(col));
-    //    //    writer.Write(BinaryConverter.Utils.BinaryConverter.ConvertShortToBytes(nbarra_ass));
-    //    //    writer.Write(BinaryConverter.Utils.BinaryConverter.ConvertFloatToBytes(lung_standard));
-    //    //    writer.Write(BinaryConverter.Utils.BinaryConverter.ConvertStringToBytes(rif1));
-    //    //    writer.Write(BinaryConverter.Utils.BinaryConverter.ConvertStringToBytes(rif2));
-    //    //    writer.Write(BinaryConverter.Utils.BinaryConverter.ConvertShortToBytes(slats_ass));
-    //    //    writer.Write(BinaryConverter.Utils.BinaryConverter.ConvertFloatToBytes(spess));
-    //    //}
-
-    //    private void WriteFixedString(BinaryWriter writer, string? value, int length)
-    //    {
-    //        // Se la stringa è null, considerala come string.Empty
-    //        string fixedValue = (value ?? string.Empty);
-    //        // Se la stringa è più lunga del limite, troncarla; altrimenti, pad con spazi
-    //        fixedValue = fixedValue.Length > length
-    //            ? fixedValue.Substring(0, length)
-    //            : fixedValue.PadRight(length, '\0');
-    //        byte[] bytes = System.Text.Encoding.Unicode.GetBytes(fixedValue);
-    //        writer.Write(bytes);
-    //    }
-
-    //    // Metodo statico per la deserializzazione
-    //    public static BarraRecord ReadBinary(BinaryReader reader)
-    //    {
-    //        var record = new BarraRecord
-    //        {
-    //            cod_prof = ParserUtils.ReadFixedString(reader, 8+1),
-    //            col = ParserUtils.ReadFixedString(reader, 8+1),
-    //            nbarra_ass = reader.ReadInt16(),
-    //            lung_standard = reader.ReadSingle(),
-    //            rif1 = ParserUtils.ReadFixedString(reader, 20+1),
-    //            rif2 = ParserUtils.ReadFixedString(reader, 20+1),
-    //            slats_ass = reader.ReadInt16(),
-    //            spess = reader.ReadSingle(),
-    //        };
-    //        return record;
-    //    }
-    //}
-
-
-
+    /// <summary>
+    /// Rappresenta un record di "Barra" (tipo B).
+    /// La struct è configurata per il marshalling in formato sequenziale (Pack = 1) 
+    /// e per la codifica Unicode (UTF-16 LE) per le stringhe a lunghezza fissa.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
     public struct DATI_BARRA
     {
+        /// <summary>
+        /// Numero della barra.
+        /// </summary>
         public short num_barra;
 
+        /// <summary>
+        /// Codice profilo (17 caratteri fissi).
+        /// </summary>
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 17)]
         public string cod_prof;
 
+        /// <summary>
+        /// Spessore.
+        /// </summary>
         public float spess;
 
+        /// <summary>
+        /// Colore (9 caratteri fissi).
+        /// </summary>
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 9)]
         public string col;
 
+        /// <summary>
+        /// Descrizione (21 caratteri fissi).
+        /// </summary>
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 21)]
         public string descr;
 
+        /// <summary>
+        /// Campo di padding o dati extra.
+        /// </summary>
         public short dummy2;
         public short dummy3;
+        /// <summary>
+        /// Lunghezza standard.
+        /// </summary>
         public float lung_standard;
+        /// <summary>
+        /// Tipo di barra.
+        /// </summary>
         public short tipo;
+        /// <summary>
+        /// Numero di barre da visualizzare assieme.
+        /// </summary>
         public short vis_nb_ass;
+        /// <summary>
+        /// Numero di barre assieme.
+        /// </summary>
         public short nbarra_ass;
+        /// <summary>
+        /// Flag per tagliata.
+        /// </summary>
         public short tagliata;
 
+        /// <summary>
+        /// Riferimento (8 caratteri fissi).
+        /// </summary>
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
         public string rif;
 
+        /// <summary>
+        /// Array di 32 byte (padding o dati extra).
+        /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
         public byte[] dummy;
 
@@ -124,22 +97,28 @@ namespace BinaryConverter.Models
 
 
 
-
+        /// <summary>
+        /// Metodo statico per scrivere un record DATI_BARRA in un BinaryWriter.
+        /// I campi vengono scritti in sequenza, assicurando che ogni campo stringa venga "padded"
+        /// al numero fisso di caratteri richiesto.
+        /// </summary>
+        /// <param name="writer">Il BinaryWriter su cui scrivere.</param>
+        /// <param name="record">Il record DATI_BARRA da scrivere.</param>
         public static void WriteDatiBarreRecord(BinaryWriter writer, DATI_BARRA record)
         {
             // Campo short: num_barra
             writer.Write(record.num_barra);
 
-            // Campo stringa: cod_prof (lunghezza fissa, es. 17 caratteri)
+            // Campo stringa: cod_prof (lunghezza fissa, 17 caratteri)
             WriteFixedString(writer, record.cod_prof, 17);
 
             // Campo float: spess
             writer.Write(record.spess);
 
-            // Campo stringa: col (lunghezza fissa, es. 9 caratteri)
+            // Campo stringa: col (lunghezza fissa, 9 caratteri)
             WriteFixedString(writer, record.col, 9);
 
-            // Campo stringa: descr (lunghezza fissa, es. 21 caratteri)
+            // Campo stringa: descr (lunghezza fissa, 21 caratteri)
             WriteFixedString(writer, record.descr, 21);
 
             // Campo short: dummy2
@@ -163,48 +142,49 @@ namespace BinaryConverter.Models
             // Campo short: tagliata
             writer.Write(record.tagliata);
 
-            // Campo stringa: rif (lunghezza fissa, es. 8 caratteri)
+            // Campo stringa: rif (lunghezza fissa, 8 caratteri)
             WriteFixedString(writer, record.rif, 8);
 
             // Campo array di byte: dummy (32 byte)
             writer.Write(record.dummy);
 
-            // Campi stringa per i puntatori (dp, pr, next_barra) – ad es. lunghezza fissa 4 caratteri
+            // Campi stringa per i puntatori (dp, pr, next_barra) – lunghezza fissa 4 caratteri
             WriteFixedString(writer, record.dp, 2);
             WriteFixedString(writer, record.pr, 2);
             WriteFixedString(writer, record.next_barra, 2);
         }
 
+        /// <summary>
+        /// Metodo helper che scrive una stringa in un BinaryWriter come campo a lunghezza fissa in UTF-16 LE.
+        /// Se la stringa è più corta, vengono scritti caratteri null ('\0') per completare la lunghezza.
+        /// Se la stringa è troppo lunga, viene troncata.
+        /// Ogni carattere viene scritto come 2 byte.
+        /// </summary>
+        /// <param name="writer">Il BinaryWriter su cui scrivere la stringa.</param>
+        /// <param name="s">La stringa da scrivere.</param>
+        /// <param name="fixedLength">Il numero totale di caratteri da scrivere (incluso il padding).</param>
         static void WriteFixedString(BinaryWriter writer, string s, int fixedLength)
         {
+            // Se la stringa è null, la sostituisce con string.Empty
             if (s == null)
                 s = string.Empty;
+
+            // Se la stringa supera la lunghezza fissa, la tronca
             if (s.Length > fixedLength)
                 s = s.Substring(0, fixedLength);
+
+            // Itera per il numero fisso di caratteri
             for (int i = 0; i < fixedLength; i++)
             {
+                // Se la stringa contiene un carattere in questa posizione, lo scrive; altrimenti scrive '\0'
                 char c = (i < s.Length) ? s[i] : '\0';
-                writer.Write(c);  // Questo scrive 2 byte per char (UTF-16 LE)
+
+                // Scrive il carattere in UTF-16 LE (2 byte per char)
+                writer.Write(c);
             }
 
 
         }
-            //public static void WriteFileBar(List<DATI_BARRA> listaBarre, string outputPath)
-            //{
-            //    using (FileStream fs = new FileStream(outputPath, FileMode.Create))
-            //    using (BinaryWriter writer = new BinaryWriter(fs, Encoding.Unicode))
-            //    {
-            //        // Se vuoi aggiungere un BOM all'inizio:
-            //        //writer.Write((ushort)0xFEFF);
-
-            //        foreach (var barra in listaBarre)
-            //        {
-            //            byte[] recordBytes = BinaryFileWriter.StructureToByteArray(barra);
-            //            writer.Write(recordBytes);
-            //        }
-            //    }
-
-            //}
     }
 
 }

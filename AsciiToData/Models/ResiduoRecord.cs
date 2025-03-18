@@ -8,59 +8,11 @@ using System.Threading.Tasks;
 
 namespace BinaryConverter.Models
 {
-    //public class ResiduoRecord : IBinaryWritable
-    //{
-    //    public short? n_barra {  get; set; }
-
-    //    public float? l_ext {  get; set; }
-    //    public float? l_int { get; set; }
-    //    public float? ang_sx { get; set; }
-    //    public float? ang_dx { get; set; }
-
-    //    public string? rif { get; set; }
-
-    //    public void WriteBinary(BinaryWriter writer)
-    //    {
-    //        writer.Write(n_barra.HasValue ? n_barra.Value : (short)0);
-
-    //        writer.Write(l_ext.HasValue ? l_ext.Value : (float)0f);
-    //        writer.Write(l_int.HasValue ? l_int.Value : (float)0f);
-    //        writer.Write(ang_sx.HasValue ? ang_sx.Value : (float)0f);
-    //        writer.Write(ang_dx.HasValue ? ang_dx.Value : (float)0f);
-
-    //        WriteFixedString(writer, rif, 7+1);
-
-    //    }
-
-    //    private void WriteFixedString(BinaryWriter writer, string? value, int length)
-    //    {
-    //        // Se la stringa è null, considerala come string.Empty
-    //        string fixedValue = (value ?? string.Empty);
-    //        // Se la stringa è più lunga del limite, troncarla; altrimenti, pad con spazi
-    //        fixedValue = fixedValue.Length > length
-    //            ? fixedValue.Substring(0, length)
-    //            : fixedValue.PadRight(length, '\0');
-    //        byte[] bytes = System.Text.Encoding.Unicode.GetBytes(fixedValue);
-    //        writer.Write(bytes);
-    //    }
-
-    //    public static ResiduoRecord ReadBinary(BinaryReader reader)
-    //    {
-    //        var record = new ResiduoRecord
-    //        {
-    //            n_barra = reader.ReadInt16(),
-
-    //            l_ext = reader.ReadSingle(),
-    //            l_int = reader.ReadSingle(),
-    //            ang_sx = reader.ReadSingle(),
-    //            ang_dx = reader.ReadSingle(),
-
-    //            rif = ParserUtils.ReadFixedString(reader, 7+1)
-    //        };
-    //        return record;
-    //    }
-    //}
-
+    /// <summary>
+    /// Rappresenta un record residuo (tipo R) per la conversione in file binari.
+    /// La struct è definita in modo sequenziale (Pack = 1) e utilizza il CharSet Unicode per le stringhe.
+    /// Le stringhe a lunghezza fissa vengono serializzate in UTF-16 LE (ogni char occupa 2 byte).
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
     public struct DATI_PEZZO_RESTANTE
     {
@@ -81,6 +33,14 @@ namespace BinaryConverter.Models
         public string rif;  // Riferimento del cliente per etichettare il riutilizzabile
 
 
+
+        /// <summary>
+        /// Scrive un record DATI_PEZZO_RESTANTE in un BinaryWriter.
+        /// I campi vengono scritti in sequenza nel formato binario specificato.
+        /// Le stringhe a lunghezza fissa vengono gestite con padding (con caratteri null) se necessario.
+        /// </summary>
+        /// <param name="writer">Il BinaryWriter su cui scrivere il record.</param>
+        /// <param name="record">Il record DATI_PEZZO_RESTANTE da scrivere.</param>
         public static void WriteDatiResiduoRecord(BinaryWriter writer, DATI_PEZZO_RESTANTE record)
         {
             writer.Write(record.n_barra);
@@ -98,16 +58,32 @@ namespace BinaryConverter.Models
             WriteFixedString(writer, record.rif, 7+1);
         }
 
+        /// <summary>
+        /// Metodo helper che scrive una stringa in un BinaryWriter come campo a lunghezza fissa in UTF-16 LE.
+        /// Se la stringa è più corta, viene completata con caratteri null ('\0'); se è troppo lunga, viene troncata.
+        /// Ogni carattere viene scritto come 2 byte.
+        /// </summary>
+        /// <param name="writer">Il BinaryWriter su cui scrivere la stringa.</param>
+        /// <param name="s">La stringa da scrivere.</param>
+        /// <param name="fixedLength">Il numero totale di caratteri da scrivere (incluso il padding).</param>
         static void WriteFixedString(BinaryWriter writer, string s, int fixedLength)
         {
+            // Se la stringa è null, assegna string.Empty per evitare eccezioni
             if (s == null)
                 s = string.Empty;
+
+            // Se la stringa supera la lunghezza fissa, la tronca
             if (s.Length > fixedLength)
                 s = s.Substring(0, fixedLength);
+
+            // Scrive ogni carattere; se non ci sono abbastanza caratteri, scrive '\0' per completare la lunghezza
             for (int i = 0; i < fixedLength; i++)
             {
+                // Se esiste un carattere in questa posizione, lo scrive; altrimenti, scrive il carattere null
                 char c = (i < s.Length) ? s[i] : '\0';
-                writer.Write(c);  // Questo scrive 2 byte per char (UTF-16 LE)
+
+                // BinaryWriter.Write(char) scrive il carattere in UTF-16 LE (2 byte per char)
+                writer.Write(c);
             }
 
 

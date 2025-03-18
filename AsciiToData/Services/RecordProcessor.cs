@@ -9,6 +9,11 @@ using System.Threading.Tasks;
 
 namespace BinaryConverter.Services
 {
+
+    /// <summary>
+    /// Elabora il file di input riga per riga, creando i record appropriati per ciascun tipo (L, B, P, R)
+    /// e li inserisce nelle rispettive liste.
+    /// </summary>
     public class RecordProcessor : IRecordProcessor
     {
         private short currentBarCount = 0; // Contatore per le barre
@@ -26,10 +31,11 @@ namespace BinaryConverter.Services
 
             foreach (string line in lines)
             {
+                // Salta le righe vuote o solo spazi
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
 
-                string trimmedLine = ParserUtils.RemoveTrailingCommas(line.Trim());
+                // Dividi la riga sui separatori ',' e rimuovi eventuali spazi in eccesso
                 string[] fields = line.Split(',')
                                               .Select(f => f.Trim())
                                               .ToArray();
@@ -37,11 +43,13 @@ namespace BinaryConverter.Services
                 if (fields.Length == 0)
                     continue;
 
+                // Determina il tipo di record basandosi sul primo carattere
                 char recordType = fields[0].Length > 0 ? fields[0][0] : ' ';
                 switch (recordType)
                 {
                     case 'L':
 
+                        // Record di tipo L (Lavoro)
                         var lav = new DATI_LAVORO
                         {
                             num_lav = ParserUtils.SafeGet(fields, 1),
@@ -79,6 +87,7 @@ namespace BinaryConverter.Services
                         var pezzo = new DATI_PEZZO
                         {
                             num_pezzo = currentPieceCount,
+                            // Il pezzo viene associato alla barra corrente
                             n_barra = currentBarCount,
 
                             angt_sx = ParserUtils.SafeParseFloat(fields, 3) / 10.0f,
@@ -99,7 +108,7 @@ namespace BinaryConverter.Services
                             n_unico_pezzo = ParserUtils.SafeParseUInt(fields, 8),
 
                             n = ParserUtils.SafeParseShort(fields, 5),
-                            n_lav = 0,
+                            n_lav = 0, 
 
                             ordine = ParserUtils.SafeGet(fields, 11),
                             cliente = ParserUtils.SafeGet(fields, 12),
@@ -116,7 +125,12 @@ namespace BinaryConverter.Services
 
                             taglia_doppia = 0,
 
-                            q = [ParserUtils.SafeParseFloat(fields, 23) / 10.0f, ParserUtils.SafeParseFloat(fields, 24) / 10.0f, ParserUtils.SafeParseFloat(fields, 25) / 10.0f, ParserUtils.SafeParseFloat(fields, 26) / 10.0f],
+                            q = [
+                                ParserUtils.SafeParseFloat(fields, 23) / 10.0f,
+                                ParserUtils.SafeParseFloat(fields, 24) / 10.0f,
+                                ParserUtils.SafeParseFloat(fields, 25) / 10.0f,
+                                ParserUtils.SafeParseFloat(fields, 26) / 10.0f
+                            ],
 
                             //info1 = ParserUtils.SafeGet(fields, 27),
                             //info2 = ParserUtils.SafeGet(fields, 28),
@@ -195,7 +209,6 @@ namespace BinaryConverter.Services
 
                             dummy = new byte[8],
 
-                            // Antonio2.txt ha un campo "1" prima di rif cosa è?
                             rif = ParserUtils.SafeGet(fields, 5),
                         };
                         parsedRecords.Residui.Add(residuo);
