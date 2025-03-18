@@ -168,16 +168,16 @@ namespace BinaryConverter.Models
 
 
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct DATI_PEZZO
     {
         public short num_pezzo;
         public short n_barra; // Chiave di corrispondenza
 
         public float angt_sx;
-        public float angp_sx;
+        //public float angp_sx;
         public float angt_dx;
-        public float angp_dx;
+        //public float angp_dx;
 
         public float l_ext;
         public float l_int;
@@ -191,7 +191,7 @@ namespace BinaryConverter.Models
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 4 + 1)]
         public string tag_speciale;
 
-        public ulong n_unico_pezzo;
+        public uint n_unico_pezzo;
 
         public short n;
         public short n_lav;
@@ -237,46 +237,117 @@ namespace BinaryConverter.Models
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public float[] q;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 60 + 1)]
-        public string info1;
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 60 + 1)]
+        //public string info1;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 60 + 1)]
-        public string info2;
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 60 + 1)]
+        //public string info2;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 60 + 1)]
-        public string info3;
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 60 + 1)]
+        //public string info3;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 60 + 1)]
-        public string info4;
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 60 + 1)]
+        //public string info4;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 60 + 1)]
-        public string info5;
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 60 + 1)]
+        //public string info5;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
         public byte[] dummy; // Array di 20 byte di padding
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
         public byte[] pointers; // Array di 4 byte per puntatori
-    
-    
-    
-        //public static void WriteFilePez(List<DATI_PEZZO> listaPezzi, string outputPath)
-        //{
-        //        using (FileStream fs = new FileStream(outputPath, FileMode.Create))
-        //        using (BinaryWriter writer = new BinaryWriter(fs, Encoding.Unicode))
-        //        {
-        //            //writer.Write((ushort)0xFEFF);
-        //            foreach (var pez in listaPezzi)
-        //            {
-        //                byte[] recordBytes = BinaryFileWriter.StructureToByteArray(pez);
-        //                writer.Write(recordBytes);
-        //            }
-        //        }
-        //}
-    
-    
-    };
 
 
+
+
+        public static void WriteDatiPezziRecord(BinaryWriter writer, DATI_PEZZO record)
+        {
+
+            writer.Write(record.num_pezzo);
+            writer.Write(record.n_barra);
+
+            writer.Write(record.angt_sx);
+            //writer.Write(record.angp_sx);
+            writer.Write(record.angt_dx);
+            //writer.Write(record.angp_dx);
+
+            writer.Write(record.l_ext);
+            writer.Write(record.l_int);
+
+            WriteFixedString(writer, record.id, 40 + 1);//52 (2=1) //54 io
+
+            writer.Write(record.n_carrello);
+            writer.Write(record.n_slot);
+
+            WriteFixedString(writer, record.tag_speciale, 4 + 1);
+
+            writer.Write(record.n_unico_pezzo);
+
+            writer.Write(record.n);
+            writer.Write(record.n_lav);
+
+            WriteFixedString(writer, record.ordine, 7 + 1);
+            WriteFixedString(writer, record.cliente, 30 + 1);
+            WriteFixedString(writer, record.pian_trav1, 6 + 1);
+            WriteFixedString(writer, record.pian_trav2, 6 + 1);
+            WriteFixedString(writer, record.pian_trav3, 6 + 1);
+            WriteFixedString(writer, record.rinf, 5 + 1);
+            WriteFixedString(writer, record.fissaggio, 25 + 1);
+            WriteFixedString(writer, record.cod_tip, 15 + 1);
+            WriteFixedString(writer, record.f_acqua1, 4 + 1);
+            WriteFixedString(writer, record.f_acqua2, 4 + 1);
+            WriteFixedString(writer, record.f_acqua3, 4 + 1);
+            WriteFixedString(writer, record.note, 30 + 1);
+
+            writer.Write(record.taglia_doppia);
+            writer.Write(record.taglia_doppia);
+
+            foreach (float val in record.q)
+                writer.Write(val);
+
+            //WriteFixedString(writer, record.info1, 60 + 1);
+            //WriteFixedString(writer, record.info2, 60 + 1);
+            //WriteFixedString(writer, record.info3, 60 + 1);
+            //WriteFixedString(writer, record.info4, 60 + 1);
+            //WriteFixedString(writer, record.info5, 60 + 1);
+
+            writer.Write(record.dummy);
+            writer.Write(record.pointers);
+        }
+
+        static void WriteFixedString(BinaryWriter writer, string s, int fixedLength)
+        {
+            if (s == null)
+                s = string.Empty;
+            if (s.Length > fixedLength)
+                s = s.Substring(0, fixedLength);
+            for (int i = 0; i < fixedLength; i++)
+            {
+                char c = (i < s.Length) ? s[i] : '\0';
+                writer.Write(c);  // Questo scrive 2 byte per char (UTF-16 LE)
+            }
+
+
+
+
+            //public static void WriteFilePez(List<DATI_PEZZO> listaPezzi, string outputPath)
+            //{
+            //        using (FileStream fs = new FileStream(outputPath, FileMode.Create))
+            //        using (BinaryWriter writer = new BinaryWriter(fs, Encoding.Unicode))
+            //        {
+            //            //writer.Write((ushort)0xFEFF);
+            //            foreach (var pez in listaPezzi)
+            //            {
+            //                byte[] recordBytes = BinaryFileWriter.StructureToByteArray(pez);
+            //                writer.Write(recordBytes);
+            //            }
+            //        }
+            //}
+
+
+        }
+
+    }
 
 }

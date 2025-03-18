@@ -70,14 +70,47 @@ namespace BinaryConverter.Models
         public float l_ext;
         public float l_int;
         public float angt_sx;
-        public float angp_sx;
+       // public float angp_sx;
         public float angt_dx;
-        public float angp_dx;
+        //public float angp_dx;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
         public byte[] dummy; // 8 byte di padding
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 7 + 1)]
         public string rif;  // Riferimento del cliente per etichettare il riutilizzabile
+
+
+        public static void WriteDatiResiduoRecord(BinaryWriter writer, DATI_PEZZO_RESTANTE record)
+        {
+            writer.Write(record.n_barra);
+            writer.Write(record.dummy2);
+
+            writer.Write(record.l_ext);
+            writer.Write(record.l_int);
+            writer.Write(record.angt_sx);
+            //writer.Write(record.angp_sx);
+            writer.Write(record.angt_dx);
+            //writer.Write(record.angp_dx);
+
+            writer.Write(record.dummy);
+
+            WriteFixedString(writer, record.rif, 7+1);
+        }
+
+        static void WriteFixedString(BinaryWriter writer, string s, int fixedLength)
+        {
+            if (s == null)
+                s = string.Empty;
+            if (s.Length > fixedLength)
+                s = s.Substring(0, fixedLength);
+            for (int i = 0; i < fixedLength; i++)
+            {
+                char c = (i < s.Length) ? s[i] : '\0';
+                writer.Write(c);  // Questo scrive 2 byte per char (UTF-16 LE)
+            }
+
+
+        }
     }
 }

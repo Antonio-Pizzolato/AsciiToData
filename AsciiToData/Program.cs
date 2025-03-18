@@ -10,7 +10,7 @@ class Program
     static void Main()
     {
         // Percorso del file di input
-        string inputFile = "C:\\Users\\antonio.pizzolato\\source\\repos\\AsciiToData\\AsciiToData\\Data\\Antonio.txt";
+        string inputFile = "C:\\Users\\antonio.pizzolato\\source\\repos\\AsciiToData\\AsciiToData\\Data\\Antonio2.txt";
 
         try
         {
@@ -30,15 +30,51 @@ class Program
             string pathRes = @"C:\Users\antonio.pizzolato\source\repos\AsciiToData\AsciiToData\Data\output.res";
 
 
+            using (FileStream fs = new FileStream(pathLav, FileMode.Create))
+            using (BinaryWriter writer = new BinaryWriter(fs, Encoding.Unicode))
+            {
+                // Se desideri, scrivi il BOM
+                // writer.Write((ushort)0xFEFF);
+
+                foreach (var lavoro in parsedRecords.Lavori)
+                {
+                    DATI_LAVORO.WriteDatiLavoroRecord(writer, lavoro);
+                }
+            }
+
             using (FileStream fs = new FileStream(pathBar, FileMode.Create))
             using (BinaryWriter writer = new BinaryWriter(fs, Encoding.Unicode))
             {
                 // Se desideri, scrivi il BOM
                // writer.Write((ushort)0xFEFF);
 
-                foreach (var record in parsedRecords.Barre)
+                foreach (var barra in parsedRecords.Barre)
                 {
-                    DATI_BARRA.WriteDatiBarreRecord(writer, record);
+                    DATI_BARRA.WriteDatiBarreRecord(writer, barra);
+                }
+            }
+
+            using (FileStream fs = new FileStream(pathPez, FileMode.Create))
+            using (BinaryWriter writer = new BinaryWriter(fs, Encoding.Unicode))
+            {
+                // Se desideri, scrivi il BOM
+                // writer.Write((ushort)0xFEFF);
+
+                foreach (var pezzo in parsedRecords.Pezzi)
+                {
+                    DATI_PEZZO.WriteDatiPezziRecord(writer, pezzo);
+                }
+            }
+
+            using (FileStream fs = new FileStream(pathRes, FileMode.Create))
+            using (BinaryWriter writer = new BinaryWriter(fs, Encoding.Unicode))
+            {
+                // Se desideri, scrivi il BOM
+                // writer.Write((ushort)0xFEFF);
+
+                foreach (var residuo in parsedRecords.Residui)
+                {
+                    DATI_PEZZO_RESTANTE.WriteDatiResiduoRecord(writer, residuo);
                 }
             }
 

@@ -46,7 +46,7 @@ namespace BinaryConverter.Models
 
 
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct DATI_LAVORO
     {
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8 + 1)]
@@ -56,7 +56,26 @@ namespace BinaryConverter.Models
         public string stato_lav;
 
 
+        public static void WriteDatiLavoroRecord(BinaryWriter writer, DATI_LAVORO record)
+        {
+            WriteFixedString(writer, record.num_lav, 8+1);
+            WriteFixedString(writer, record.stato_lav, 8+1);
+        }
 
+        static void WriteFixedString(BinaryWriter writer, string s, int fixedLength)
+        {
+            if (s == null)
+                s = string.Empty;
+            if (s.Length > fixedLength)
+                s = s.Substring(0, fixedLength);
+            for (int i = 0; i < fixedLength; i++)
+            {
+                char c = (i < s.Length) ? s[i] : '\0';
+                writer.Write(c);  // Questo scrive 2 byte per char (UTF-16 LE)
+            }
+
+
+        }
 
     }
 }

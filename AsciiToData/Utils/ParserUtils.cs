@@ -21,7 +21,7 @@ namespace BinaryConverter.Utils
         // Metodi helper per la sicurezza
         public static string SafeGet(string[] fields, int index)
         {
-            return fields.Length > index ? fields[index] : string.Empty;
+            return fields.Length > index ? fields[index].ToUpper() : string.Empty;
         }
 
         public static short SafeParseShort(string[] fields, int index, short defaultValue = 0)
@@ -45,6 +45,14 @@ namespace BinaryConverter.Utils
         {
             string? rawValue = SafeGet(fields, index).Trim();
             return ulong.TryParse(rawValue, NumberStyles.Any, CultureInfo.InvariantCulture, out ulong result) 
+                ? result 
+                : defaultValue;
+        }
+        
+        public static uint SafeParseUInt(string[] fields, int index, uint defaultValue = 0)
+        {
+            string? rawValue = SafeGet(fields, index).Trim();
+            return uint.TryParse(rawValue, NumberStyles.Any, CultureInfo.InvariantCulture, out uint result) 
                 ? result 
                 : defaultValue;
         }

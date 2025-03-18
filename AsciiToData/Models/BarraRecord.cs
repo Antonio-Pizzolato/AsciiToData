@@ -80,7 +80,7 @@ namespace BinaryConverter.Models
 
 
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
     public struct DATI_BARRA
     {
         public short num_barra;
@@ -170,9 +170,9 @@ namespace BinaryConverter.Models
             writer.Write(record.dummy);
 
             // Campi stringa per i puntatori (dp, pr, next_barra) – ad es. lunghezza fissa 4 caratteri
-            WriteFixedString(writer, record.dp, 4);
-            WriteFixedString(writer, record.pr, 4);
-            WriteFixedString(writer, record.next_barra, 4);
+            WriteFixedString(writer, record.dp, 2);
+            WriteFixedString(writer, record.pr, 2);
+            WriteFixedString(writer, record.next_barra, 2);
         }
 
         static void WriteFixedString(BinaryWriter writer, string s, int fixedLength)
@@ -188,9 +188,7 @@ namespace BinaryConverter.Models
             }
 
 
-
-
-
+        }
             //public static void WriteFileBar(List<DATI_BARRA> listaBarre, string outputPath)
             //{
             //    using (FileStream fs = new FileStream(outputPath, FileMode.Create))
@@ -207,10 +205,6 @@ namespace BinaryConverter.Models
             //    }
 
             //}
-
-
-
-        }
     }
 
 }

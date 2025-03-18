@@ -11,6 +11,8 @@ namespace BinaryConverter.Services
 {
     public class RecordProcessor : IRecordProcessor
     {
+        private short currentBarCount = 0; // Contatore per le barre
+        private short currentPieceCount = 0; // Contatore per i pezzi
         public ParsedRecords ProcessFile(string filePath)
         {
             var parsedRecords = new ParsedRecords();
@@ -49,9 +51,10 @@ namespace BinaryConverter.Services
 
                         break;
                     case 'B':
+                        currentBarCount++;
                         var barra = new DATI_BARRA
                         {
-                            num_barra = ParserUtils.SafeParseShort(fields, 0),
+                            num_barra = currentBarCount,
                             cod_prof = ParserUtils.SafeGet(fields, 1),
                             spess = 0,
                             col = ParserUtils.SafeGet(fields, 2),
@@ -72,75 +75,128 @@ namespace BinaryConverter.Services
                         parsedRecords.Barre.Add(barra);
                         break;
                     case 'P':
+                        currentPieceCount++;
                         var pezzo = new DATI_PEZZO
                         {
-                            num_pezzo = ParserUtils.SafeParseShort(fields, 1),
-                            n_barra = ParserUtils.SafeParseShort(fields, 2),
+                            num_pezzo = currentPieceCount,
+                            n_barra = currentBarCount,
 
-                            angt_sx = ParserUtils.SafeParseShort(fields, 3),
-                            angp_sx = ParserUtils.SafeParseShort(fields, 4),
-                            angt_dx = ParserUtils.SafeParseShort(fields, 5),
-                            angp_dx = ParserUtils.SafeParseShort(fields, 6),
+                            angt_sx = ParserUtils.SafeParseFloat(fields, 3) / 10.0f,
+                            //angp_sx = ParserUtils.SafeParseFloat(fields, 4) / 10.0f,  // TODO: Togli i due angoli in più e vedi se viene tutto uguale al file ANTONIO.PEZ e RES senza i due angoli in più
+                            angt_dx = ParserUtils.SafeParseFloat(fields, 4) / 10.0f,
+                            //angp_dx = ParserUtils.SafeParseFloat(fields, 6) / 10.0f,
 
-                            l_ext = ParserUtils.SafeParseShort(fields, 7),
-                            l_int = ParserUtils.SafeParseShort(fields, 8),
+                            l_ext = ParserUtils.SafeParseFloat(fields, 1) / 10.0f,
+                            l_int = ParserUtils.SafeParseFloat(fields, 2) / 10.0f,
 
                             id = ParserUtils.SafeGet(fields, 9),
 
-                            n_carrello = ParserUtils.SafeParseShort(fields, 10),
-                            n_slot = ParserUtils.SafeParseShort(fields, 11),
+                            n_carrello = ParserUtils.SafeParseShort(fields, 6),
+                            n_slot = ParserUtils.SafeParseShort(fields, 7),
 
-                            tag_speciale = ParserUtils.SafeGet(fields, 12),
+                            tag_speciale = ParserUtils.SafeGet(fields, 10),
 
-                            n_unico_pezzo = ParserUtils.SafeParseULong(fields, 13),
+                            n_unico_pezzo = ParserUtils.SafeParseUInt(fields, 8),
 
-                            n = ParserUtils.SafeParseShort(fields, 14),
-                            n_lav = ParserUtils.SafeParseShort(fields, 15),
+                            n = ParserUtils.SafeParseShort(fields, 5),
+                            n_lav = 0,
 
-                            ordine = ParserUtils.SafeGet(fields, 16),
-                            cliente = ParserUtils.SafeGet(fields, 17),
-                            pian_trav1 = ParserUtils.SafeGet(fields, 18),
-                            pian_trav2 = ParserUtils.SafeGet(fields, 19),
-                            pian_trav3 = ParserUtils.SafeGet(fields, 20),
-                            rinf = ParserUtils.SafeGet(fields, 21),
-                            fissaggio = ParserUtils.SafeGet(fields, 22),
-                            cod_tip = ParserUtils.SafeGet(fields, 23),
-                            f_acqua1 = ParserUtils.SafeGet(fields, 24),
-                            f_acqua2 = ParserUtils.SafeGet(fields, 25),
-                            f_acqua3 = ParserUtils.SafeGet(fields, 26),
-                            note = ParserUtils.SafeGet(fields, 27),
+                            ordine = ParserUtils.SafeGet(fields, 11),
+                            cliente = ParserUtils.SafeGet(fields, 12),
+                            pian_trav1 = ParserUtils.SafeGet(fields, 13),
+                            pian_trav2 = ParserUtils.SafeGet(fields, 14),
+                            pian_trav3 = ParserUtils.SafeGet(fields, 15),
+                            rinf = ParserUtils.SafeGet(fields, 16),
+                            fissaggio = ParserUtils.SafeGet(fields, 17),
+                            cod_tip = ParserUtils.SafeGet(fields, 18),
+                            f_acqua1 = ParserUtils.SafeGet(fields, 19),
+                            f_acqua2 = ParserUtils.SafeGet(fields, 20),
+                            f_acqua3 = ParserUtils.SafeGet(fields, 21),
+                            note = ParserUtils.SafeGet(fields, 22),
 
-                            taglia_doppia = ParserUtils.SafeParseShort(fields, 28),
+                            taglia_doppia = 0,
 
-                            q = new float[4],
+                            q = [ParserUtils.SafeParseFloat(fields, 23) / 10.0f, ParserUtils.SafeParseFloat(fields, 24) / 10.0f, ParserUtils.SafeParseFloat(fields, 25) / 10.0f, ParserUtils.SafeParseFloat(fields, 26) / 10.0f],
 
-                            info1 = ParserUtils.SafeGet(fields, 29),
-                            info2 = ParserUtils.SafeGet(fields, 30),
-                            info3 = ParserUtils.SafeGet(fields, 31),
-                            info4 = ParserUtils.SafeGet(fields, 32),
-                            info5 = ParserUtils.SafeGet(fields, 33),
+                            //info1 = ParserUtils.SafeGet(fields, 27),
+                            //info2 = ParserUtils.SafeGet(fields, 28),
+                            //info3 = ParserUtils.SafeGet(fields, 29),
+                            //info4 = ParserUtils.SafeGet(fields, 30),
+                            //info5 = ParserUtils.SafeGet(fields, 31),
 
                             dummy = new byte[20],
-                            pointers = new byte[4],
+                            pointers = new byte[8],
+
+
+
+                            //num_pezzo = currentPieceCount,
+                            //n_barra = currentBarCount,
+
+                            //angt_sx = ParserUtils.SafeParseFloat(fields, 1) / 10.0f,
+                            ////angp_sx = ParserUtils.SafeParseFloat(fields, 4) / 10.0f,  // TODO: Togli i due angoli in più e vedi se viene tutto uguale al file ANTONIO.PEZ e RES senza i due angoli in più
+                            //angt_dx = ParserUtils.SafeParseFloat(fields, 2) / 10.0f,
+                            ////angp_dx = ParserUtils.SafeParseFloat(fields, 6) / 10.0f,
+
+                            //l_ext = ParserUtils.SafeParseFloat(fields, 3) / 10.0f,
+                            //l_int = ParserUtils.SafeParseFloat(fields, 4) / 10.0f,
+
+                            //id = ParserUtils.SafeGet(fields, 5),
+
+                            //n_carrello = ParserUtils.SafeParseShort(fields, 6),
+                            //n_slot = ParserUtils.SafeParseShort(fields, 7),
+
+                            //tag_speciale = ParserUtils.SafeGet(fields, 8),
+
+                            //n_unico_pezzo = ParserUtils.SafeParseUInt(fields, 9),
+
+                            //n = ParserUtils.SafeParseShort(fields, 10),
+                            //n_lav = ParserUtils.SafeParseShort(fields, 11),
+
+                            //ordine = ParserUtils.SafeGet(fields, 12),
+                            //cliente = ParserUtils.SafeGet(fields, 13),
+                            //pian_trav1 = ParserUtils.SafeGet(fields, 14),
+                            //pian_trav2 = ParserUtils.SafeGet(fields, 15),
+                            //pian_trav3 = ParserUtils.SafeGet(fields, 16),
+                            //rinf = ParserUtils.SafeGet(fields, 17),
+                            //fissaggio = ParserUtils.SafeGet(fields, 18),
+                            //cod_tip = ParserUtils.SafeGet(fields, 19),
+                            //f_acqua1 = ParserUtils.SafeGet(fields, 20),
+                            //f_acqua2 = ParserUtils.SafeGet(fields, 21),
+                            //f_acqua3 = ParserUtils.SafeGet(fields, 22),
+                            //note = ParserUtils.SafeGet(fields, 23),
+
+                            //taglia_doppia = ParserUtils.SafeParseShort(fields,24),
+
+                            //q = [ParserUtils.SafeParseFloat(fields, 25) / 10.0f, ParserUtils.SafeParseFloat(fields, 26) / 10.0f, ParserUtils.SafeParseFloat(fields, 27) / 10.0f, ParserUtils.SafeParseFloat(fields, 28) / 10.0f],
+
+                            ////info1 = ParserUtils.SafeGet(fields, 27),
+                            ////info2 = ParserUtils.SafeGet(fields, 28),
+                            ////info3 = ParserUtils.SafeGet(fields, 29),
+                            ////info4 = ParserUtils.SafeGet(fields, 30),
+                            ////info5 = ParserUtils.SafeGet(fields, 31),
+
+                            //dummy = new byte[20],
+                            //pointers = new byte[8],
                         };
                         parsedRecords.Pezzi.Add(pezzo);
                         break;
                     case 'R':
                         var residuo = new DATI_PEZZO_RESTANTE
                         {
-                            n_barra = ParserUtils.SafeParseShort(fields, 1),
+                            n_barra = 1,
                             dummy2 = 0,
 
-                            l_ext = ParserUtils.SafeParseFloat(fields, 2),
-                            l_int = ParserUtils.SafeParseFloat(fields, 3),
-                            angt_sx = ParserUtils.SafeParseFloat(fields, 4),
-                            angp_sx = ParserUtils.SafeParseFloat(fields, 5),
-                            angt_dx = ParserUtils.SafeParseFloat(fields, 6),
-                            angp_dx = ParserUtils.SafeParseFloat(fields, 7),
+                            l_ext = ParserUtils.SafeParseFloat(fields, 1) / 10.0f,
+                            l_int = ParserUtils.SafeParseFloat(fields, 2) / 10.0f,
+                            angt_sx = ParserUtils.SafeParseFloat(fields, 3) / 10.0f,
+                            //angp_sx = ParserUtils.SafeParseFloat(fields, 4) / 10.0f,
+                            angt_dx = ParserUtils.SafeParseFloat(fields, 4) / 10.0f,
+                            //angp_dx = ParserUtils.SafeParseFloat(fields, 6) / 10.0f,
 
                             dummy = new byte[8],
 
-                            rif = ParserUtils.SafeGet(fields, 8),
+                            // Antonio2.txt ha un campo "1" prima di rif cosa è?
+                            rif = ParserUtils.SafeGet(fields, 5),
                         };
                         parsedRecords.Residui.Add(residuo);
                         break;
